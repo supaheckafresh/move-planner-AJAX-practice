@@ -1,0 +1,54 @@
+// nytimes api key: 0c8b845367dad3f1c4ad7a110c3004b9:2:62066343
+
+
+function loadData() {
+
+    var $body = $('body');
+    var $wikiElem = $('#wikipedia-links');
+    var $nytHeaderElem = $('#nytimes-header');
+    var $nytElem = $('#nytimes-articles');
+    var $greeting = $('#greeting');
+
+    // clear out old data before new request
+    $wikiElem.text("");
+    $nytElem.text("");
+
+    // get contents of street and city
+    var street = $('#street').val();
+    var city = $('#city').val();
+    var address = street + ', ' + city;
+
+    // display greeting
+    $greeting.text('So, you want to live at ' + address);
+
+    // load streetview
+    var $bgStreetView = $("<img class='bgimg' src='https://maps.googleapis.com/maps/api/streetview?size=600x300&location=" + address + "'>");
+    $body.append($bgStreetView);
+
+    //build NyTimes request url
+    var baseUri = 'http://api.nytimes.com/svc/search/v2/articlesearch.json';
+    var queryParams = '?q=' +
+            city.replace(', ', '+') +
+            //TODO remove API key before sharing
+            '&api-key=' + '0c8b845367dad3f1c4ad7a110c3004b9\:2\:62066343';
+
+    var builtUri = baseUri + queryParams;
+
+    // fetch articles via AJAX request and display if response received
+    $.getJSON(builtUri, function ( data ) {
+            var docs = data.response.docs;
+            var articles = [];
+            for (var docIdx in docs) {
+                var doc = docs[docIdx];
+                articles.push('<li id="' + doc._id + '">' + doc.headline.main + '</li>');
+            }
+            $nytElem.append(articles.join(''));
+        }
+    );
+
+
+    return false;
+}
+
+$('#form-container').submit(loadData);
+
