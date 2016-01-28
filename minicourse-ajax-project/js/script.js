@@ -40,7 +40,7 @@ function loadData() {
             var docs = data.response.docs;
             var articles = [];
 
-            $nytHeaderElem.text('New York Times Articles about ' + address);
+            $nytHeaderElem.text('New York Times Articles about ' + city);
 
             for (var docIdx in docs) {
                 var doc = docs[docIdx];
@@ -50,9 +50,14 @@ function loadData() {
                     '<p>' + doc.snippet + '</p>' +
                     '</li>');
             }
+
             $nytElem.append(articles.join(''));
         }
-    );
+    )
+        .error(function () {
+            console.log('documents could not be loaded');
+            $nytHeaderElem.text('New York Times Articles about ' + city + ' could not be loaded!');
+        });
 
 
     return false;
