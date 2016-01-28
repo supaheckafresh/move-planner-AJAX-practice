@@ -29,6 +29,7 @@ function loadData() {
     var baseUri = 'http://api.nytimes.com/svc/search/v2/articlesearch.json';
     var queryParams = '?q=' +
             city.replace(', ', '+') +
+            '&sort=newest' +
             //TODO remove API key before sharing
             '&api-key=' + '0c8b845367dad3f1c4ad7a110c3004b9\:2\:62066343';
 
@@ -38,9 +39,16 @@ function loadData() {
     $.getJSON(builtUri, function ( data ) {
             var docs = data.response.docs;
             var articles = [];
+
+            $nytHeaderElem.text('New York Times Articles about ' + address);
+
             for (var docIdx in docs) {
                 var doc = docs[docIdx];
-                articles.push('<li id="' + doc._id + '">' + doc.headline.main + '</li>');
+
+                articles.push('<li id="' + doc._id + '">' +
+                    '<a href="' + doc.web_url + '">' + doc.headline.main + '</a>' +
+                    '<p>' + doc.snippet + '</p>' +
+                    '</li>');
             }
             $nytElem.append(articles.join(''));
         }
