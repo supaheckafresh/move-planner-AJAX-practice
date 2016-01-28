@@ -55,9 +55,32 @@ function loadData() {
         }
     )
         .error(function () {
-            console.log('documents could not be loaded');
             $nytHeaderElem.text('New York Times Articles about ' + city + ' could not be loaded!');
         });
+
+
+    // Wikipedia links AJAX request using JSONP
+    $.ajax( {
+        url: 'https://en.wikipedia.org/w/api.php?',
+        data: {
+            action: 'opensearch',
+            search: city
+            },
+        dataType: 'jsonp',
+        success: function (JSONdata) {
+            $wikiElem.text('Wikipedia articles about ' + city + ':');
+
+            var articles = JSONdata[3];
+            for (var article in articles) {
+                $wikiElem.append('<li><a href="' + articles[article] + '">'
+                    + articles[article] + '</a></li>');
+            }
+
+        },
+        error: function () {
+            $wikiElem.text('Error retrieving Wikipedia articles on ' + city + '.');
+        }
+    });
 
 
     return false;
